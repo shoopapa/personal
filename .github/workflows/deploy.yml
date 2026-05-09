@@ -29,6 +29,6 @@ jobs:
       aws_account_id: "811951001781"
       database_stack_name: Database
       captcha_secret_id: google-captcha
-      aws_role_arn: arn:aws:iam::598779587892:role/GitHubOidcAwsRole
+      aws_role_arn: arn:aws:iam::811951001781:role/github-oidc-role
     secrets:
       DB_BASTION_KEY_PAIR: ${{ secrets.DB_BASTION_KEY_PAIR }}
