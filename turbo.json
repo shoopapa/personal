@@ -1,0 +1,83 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".cache/tsbuildinfo.json", "dist/**"]
+    },
+    "dev": {
+      "dependsOn": ["^dev"],
+      "cache": false,
+      "persistent": false
+    },
+    "format": {
+      "outputs": [".cache/.prettiercache"],
+      "outputLogs": "new-only"
+    },
+    "lint": {
+      "dependsOn": ["^topo", "^build"],
+      "outputs": [".cache/.eslintcache"]
+    },
+    "typecheck": {
+      "dependsOn": ["^topo", "^build"],
+      "outputs": [".cache/tsbuildinfo.json"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "//#clean": {
+      "cache": false
+    },
+    "push": {
+      "cache": false,
+      "interactive": true
+    },
+    "studio": {
+      "cache": false,
+      "persistent": true
+    },
+    "ui-add": {
+      "cache": false,
+      "interactive": true
+    },
+    "cdk:deploy": {
+      "cache": false,
+      "interactive": false
+    },
+    "@acme/infra#cdk:deploy": {
+      "cache": false,
+      "interactive": false
+    },
+    "e2e": {
+      "dependsOn": ["^build"],
+      "cache": false
+    }
+  },
+
+  "globalEnv": ["DATABASE_URL", "AUTH_SECRET", "PORT", "COMMUNICATION_MOCK", "PLAYWRIGHT_BASE_URL"],
+  "globalPassThroughEnv": [
+    "NODE_ENV",
+    "CI",
+    "VERCEL",
+    "VERCEL_ENV",
+    "VERCEL_URL",
+    "npm_lifecycle_event",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_REGION",
+    "AWS_SESSION_TOKEN",
+    "AWS_ROLE_ARN",
+    "TWILIO_ACCOUNT_SID",
+    "TWILIO_AUTH_TOKEN",
+    "CAPTCHA_SECRET_KEY",
+    "NEXT_PUBLIC_CAPTCHA_SITE_KEY",
+    "NEXT_PUBLIC_APP_API_URL",
+    "AWS_ACCOUNT_ID",
+    "DEPLOY_SLUG",
+    "MINECRAFT_EULA"
+  ]
+}

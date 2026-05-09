@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres
+    container_name: lightning-db
+    ports:
+      - "5100:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    command: >
+      postgres
+      -c log_statement=all
+      -c log_min_duration_statement=0
+      -c log_line_prefix='%m.%f [%p] txid=%x [%l-1] user=%u,db=%d,app=%a,client=%h '
+      -c log_timezone='UTC'
+
+  ministack:
+    image: nahuelnucera/ministack
+    container_name: lightning-s3
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: s3
+      DEFAULT_REGION: us-east-1
+      EXTRA_CORS_ALLOWED_ORIGINS: "*"
+      EXTRA_CORS_ALLOWED_HEADERS: "*"
+      EXTRA_CORS_EXPOSE_HEADERS: "ETag,x-amz-request-id"
+
+  s3-browser:
+    image: romanzdk/s3-web-browser
+    container_name: lightning-s3-browser
+    ports:
+      - "4567:8000"
+    environment:
+      AWS_ENDPOINT_URL: http://ministack:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    command: gunicorn --bind 0.0.0.0:8000 run:app
+    depends_on:
+      - ministack

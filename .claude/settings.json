@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm remove:*)",
+      "Bash(ls *)",
+      "Bash(pnpm --filter *)",
+      "Bash(pnpm test:*)",
+      "Bash(unzip *)",
+      "Bash(xargs cat:*)",
+      "Bash(grep *)",
+      "Bash(git log:*)",
+      "Bash(docker exec:*)",
+      "Bash(AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 aws --endpoint-url http://localhost:4566 s3 *)",
+      "Read(//tmp/**)",
+      "Bash(psql \"postgres://postgres:postgres@localhost:5100/postgres?sslmode=disable\" *)",
+      "WebFetch(domain:cloud.scorm.com)",
+      "WebFetch(domain:support.scorm.com)",
+      "WebSearch",
+      "Bash(git log:*)",
+      "Skill(format)",
+      "Skill(pr)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm lint:*)",
+      "Skill(test)",
+      "Bash(xargs sed:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:www.better-auth.com)",
+      "Bash(git push:*)",
+      "Bash(gh pr:*)",
+      "Bash(playwright-cli *)",
+      "Bash(pnpm format:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/joedavis/code/lightning && pnpm format:fix 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
+  }
+}

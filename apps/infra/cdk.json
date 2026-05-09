@@ -1,0 +1,3 @@
+{
+  "app": "pnpm tsx infra/app.stack.ts"
+}

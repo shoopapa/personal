@@ -1,0 +1,52 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main # Production deployments
+      - sandbox # Sandbox environment deployments
+  workflow_call:
+    inputs:
+      ref:
+        description: "Git ref to deploy (branch, tag, or SHA)"
+        required: false
+        type: string
+    secrets:
+      DB_BASTION_KEY_PAIR:
+        required: false
+
+jobs:
+  # Production deployment (main branch)
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: production
+      app_api_url: app.lightninglms.com
+      aws_region: us-east-1
+      aws_account_id: "598779587892"
+      database_stack_name: Database
+      captcha_secret_id: google-captcha
+      aws_role_arn: arn:aws:iam::598779587892:role/GitHubOidcAwsRole
+    secrets:
+      DB_BASTION_KEY_PAIR: ${{ secrets.DB_BASTION_KEY_PAIR }}
+
+  # Sandbox environment deployment (sbx branch)
+  deploy-sandbox:
+    if: github.ref == 'refs/heads/sandbox'
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: sandbox
+      app_api_url: app.sbx.lightninglms.com
+      aws_region: us-east-1
+      aws_account_id: "874834750822"
+      database_stack_name: Database
+      captcha_secret_id: google-captcha
+      aws_role_arn: arn:aws:iam::874834750822:role/GitHubOidcAwsRole
+    secrets:
+      DB_BASTION_KEY_PAIR: ${{ secrets.DB_BASTION_KEY_PAIR }}

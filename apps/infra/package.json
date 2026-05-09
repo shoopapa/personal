@@ -1,0 +1,28 @@
+{
+  "name": "@acme/infra",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules cdk.out",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint",
+    "cdk:deploy": "cdk deploy --all --require-approval never"
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "catalog:t3-oss",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "aws-cdk": "catalog:cdk",
+    "aws-cdk-lib": "catalog:cdk",
+    "cdk": "catalog:cdk",
+    "eslint": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}
