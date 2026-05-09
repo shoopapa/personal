@@ -5,7 +5,6 @@ export const env = createEnv({
   server: {
     AWS_ACCOUNT_ID: z.string(),
     AWS_REGION: z.string(),
-    MINECRAFT_EULA: z.literal("TRUE"),
   },
   experimental__runtimeEnv: {},
   skipValidation:

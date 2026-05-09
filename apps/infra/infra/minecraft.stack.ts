@@ -62,7 +62,7 @@ export class MinecraftStack extends cdk.Stack {
       image: ecs.ContainerImage.fromRegistry("itzg/minecraft-server"),
       essential: true,
       environment: {
-        EULA: env.MINECRAFT_EULA,
+        EULA: "TRUE",
         TYPE: "FABRIC",
         VERSION: "1.21.4",
         MEMORY: "3G",
