@@ -33,10 +33,7 @@ export class OidcStack extends cdk.Stack {
             "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
           },
           StringLike: {
-            "token.actions.githubusercontent.com:sub": [
-              `repo:${GITHUB_ORG}/${GITHUB_REPO}:ref:refs/heads/main`,
-              `repo:${GITHUB_ORG}/${GITHUB_REPO}:pull_request`,
-            ],
+            "token.actions.githubusercontent.com:sub": `repo:${GITHUB_ORG}/${GITHUB_REPO}:*`,
           },
         },
       ),
