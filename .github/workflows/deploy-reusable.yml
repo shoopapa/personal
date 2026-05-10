@@ -25,11 +25,6 @@ on:
         required: false
         type: string
         default: "Database"
-      captcha_secret_id:
-        description: "AWS Secrets Manager secret ID for Google Captcha"
-        required: false
-        type: string
-        default: "google-captcha"
       aws_role_arn:
         description: "AWS IAM role ARN for OIDC authentication"
         required: true
@@ -66,45 +61,7 @@ jobs:
       # next public vars are embedded at build time, so we need to set them now
       - name: Build
         run: |
-          export NEXT_PUBLIC_APP_API_URL=${{ inputs.app_api_url }}
-          export NEXT_PUBLIC_CAPTCHA_SITE_KEY=$(aws secretsmanager get-secret-value --secret-id "${{ inputs.captcha_secret_id }}" --query SecretString --output text | jq -r '.NEXT_PUBLIC_CAPTCHA_SITE_KEY')
           pnpm build
-
-      - name: Migrate Database
-        env:
-          DB_BASTION_KEY_PAIR: ${{ secrets.DB_BASTION_KEY_PAIR }}
-          STACK_NAME: ${{ inputs.database_stack_name }}
-        run: |
-          # Check if the stack exists before proceeding
-          if ! aws cloudformation describe-stacks --stack-name $STACK_NAME >/dev/null 2>&1; then
-            echo "Error: Stack '$STACK_NAME' does not exist. Please deploy the database stack first."
-            exit 1
-          fi
-
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "$DB_BASTION_KEY_PAIR" > ~/.ssh/dbBastion-key-pair.pem
-          chmod 600 ~/.ssh/dbBastion-key-pair.pem
-
-          DB_BASTION_PUBLIC_IP=$(aws cloudformation describe-stacks --stack-name ${{ env.STACK_NAME }} --query "Stacks[0].Outputs[?OutputKey=='DbBastionPublicIp'].OutputValue" --output text)
-          RDS_ENDPOINT=$(aws cloudformation describe-stacks --stack-name ${{ env.STACK_NAME }} --query "Stacks[0].Outputs[?OutputKey=='RdsEndpoint'].OutputValue" --output text)
-          RDS_SECRET_NAME=$(aws cloudformation describe-stacks --stack-name ${{ env.STACK_NAME }} --query "Stacks[0].Outputs[?OutputKey=='RdsSecretName'].OutputValue" --output text)
-
-          # Add the bastion host's key to known_hosts to avoid interactive prompts
-          ssh-keyscan -H $DB_BASTION_PUBLIC_IP >> ~/.ssh/known_hosts
-
-          # Create the SSH tunnel in the background
-          ssh -f -N -L 5433:$RDS_ENDPOINT:5432 ec2-user@$DB_BASTION_PUBLIC_IP -i ~/.ssh/dbBastion-key-pair.pem
-          sleep 5
-
-          # Get the database secret JSON from AWS Secrets Manager using the secret name
-          DB_SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "$RDS_SECRET_NAME" --query SecretString --output text)
-          DB_PASSWORD=$(echo "$DB_SECRET_JSON" | jq -r '.password')
-          DB_PASSWORD_ENCODED=$(printf '%s' "$DB_PASSWORD" | jq -sRr @uri)
-
-          export DATABASE_URL="postgresql://postgres:$DB_PASSWORD_ENCODED@localhost:5433/postgres"
-
-          pnpm --filter db migrate:latest
 
       - name: AWS Deploy
         shell: bash
