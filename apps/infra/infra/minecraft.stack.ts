@@ -99,10 +99,7 @@ export class MinecraftStack extends cdk.Stack {
       assignPublicIp: true,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       securityGroups: [taskSg],
-      capacityProviderStrategies: [
-        { capacityProvider: "FARGATE_SPOT", weight: 1 },
-        { capacityProvider: "FARGATE", base: 1, weight: 0 },
-      ],
+
       // minHealthyPercent: 0 is required with desiredCount: 1 for rolling updates
       minHealthyPercent: 0,
       maxHealthyPercent: 100,
