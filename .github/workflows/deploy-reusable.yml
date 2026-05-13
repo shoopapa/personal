@@ -7,10 +7,6 @@ on:
         description: "Environment to deploy to (production, demo, sbx)"
         required: true
         type: string
-      app_api_url:
-        description: "API URL for the environment"
-        required: true
-        type: string
       aws_region:
         description: "AWS region to deploy to"
         required: false
@@ -20,11 +16,6 @@ on:
         description: "AWS account ID"
         required: true
         type: string
-      database_stack_name:
-        description: "CloudFormation stack name for the database"
-        required: false
-        type: string
-        default: "Database"
       aws_role_arn:
         description: "AWS IAM role ARN for OIDC authentication"
         required: true
@@ -33,10 +24,6 @@ on:
         description: "Git ref to checkout (branch, tag, or SHA)"
         required: false
         type: string
-    secrets:
-      DB_BASTION_KEY_PAIR:
-        description: "SSH private key for database bastion host"
-        required: true
 
 jobs:
   deploy:
