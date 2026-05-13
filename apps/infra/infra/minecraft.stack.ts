@@ -22,7 +22,6 @@ export class MinecraftStack extends cdk.Stack {
       ],
     });
 
-    // EFS — world data survives task restarts and Spot interruptions
     const worldFs = new efs.FileSystem(this, "WorldFs", {
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
